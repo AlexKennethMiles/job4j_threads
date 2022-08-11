@@ -18,15 +18,22 @@ public class Wget implements Runnable {
 
     @Override
     public void run() {
-        long start = System.nanoTime();
+        long start = System.currentTimeMillis();
         try (BufferedInputStream bf = new BufferedInputStream(new URL(url).openStream())) {
-            FileOutputStream fos = new FileOutputStream("pom_temp.xml");
+            String fileName = "temp_".concat(url.substring(url.lastIndexOf('/') + 1));
+            FileOutputStream fos = new FileOutputStream(fileName);
             byte[] buff = new byte[1024];
+            int downloadData = 0;
             int currByte;
             while ((currByte = bf.read(buff)) != -1) {
                 fos.write(buff, 0, currByte);
-                if ((System.nanoTime() - start) < speed * 10000L) {
-                    Thread.sleep(1000);
+                downloadData += currByte;
+                if (downloadData >= speed) {
+                    if (System.currentTimeMillis() - start < 1000) {
+                        Thread.sleep(1000);
+                        start = System.currentTimeMillis();
+                        downloadData = 0;
+                    }
                 }
             }
         } catch (IOException | InterruptedException e) {
@@ -39,22 +46,27 @@ public class Wget implements Runnable {
             new URL(url).toURI();
             return true;
         } catch (MalformedURLException | URISyntaxException e) {
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 
     /**
      * Метод валидирует входные параметры (корректность ссылки и значение скорости закачки в Б/сек),
-     * после чего запускает поток на считывание файла по ссылке. Если фактическая скорость закачки меньше
-     * заявленной, то поток засыпает на 1 секунду (имитация подгрузки данных).
+     * после чего запускает поток на считывание файла по ссылке. Если фактическая скорость закачки
+     * выше заявленной, то поток засыпает на 1 секунду (превышена ожидаемая скорость загрузки).
      *
      * @param args — в args[0] положили ссылку:
-     *             https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml
-     *             в args[1] положили 100000000 (которое позже будет увеличено в 10000 раз)
+     *             proof.ovh.net/files/10Mb.dat
+     *             в args[1] положили значение скорости равное 1048576 байт/сек или 1 МБ/с
+     *             с такими входными данными, файл скачается за 10 секунд.
      * @throws InterruptedException в случае остановки метода {@link Wget#run()} через try-catch
-     * будет проброшен флаг interrupted, чтобы уведомить об этом клиентскую часть программы.
+     *                              будет проброшен флаг interrupted, чтобы уведомить об этом клиентскую часть программы.
      */
     public static void main(String[] args) throws InterruptedException {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Аргументы для запуска программы заданы не полностью!");
+        }
         String url = args[0];
         System.out.println("Is URL valid: " + isValidURL(url));
         int speed = Integer.parseInt(args[1]);
