@@ -13,7 +13,7 @@ public class ConsoleProgress implements Runnable {
     @Override
     public void run() {
         int index = 0;
-        while (!Thread.interrupted()) {
+        while (!Thread.currentThread().interrupted()) {
             System.out.print("\rLoad: " + PROCESS[index]);
             index++;
             if (PROCESS.length <= index) {
