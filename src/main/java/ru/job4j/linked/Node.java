@@ -1,22 +1,26 @@
 package ru.job4j.linked;
 
+/**
+ * Клас стал потокобезопасным за счёт финализации полей класса и ликвидации сеттеров.
+ * Состояние объекта класса определяется единожды на этапе создания через конструктор
+ * и не может быть изменено далее. Использоваться может только на чтение.
+ *
+ * @param <T> - тип объекта для узла (ноды)
+ */
 public class Node<T> {
-    private Node<T> next;
-    private T value;
+    private final Node<T> next;
+    private final T value;
+
+    public Node(Node<T> next, T value) {
+        this.next = next;
+        this.value = value;
+    }
 
     public Node<T> getNext() {
         return next;
     }
 
-    public void setNext(Node<T> next) {
-        this.next = next;
-    }
-
     public T getValue() {
         return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
     }
 }
