@@ -3,6 +3,8 @@ package ru.job4j.ref;
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +23,14 @@ public class UserCache {
     }
 
     public List<User> findAll() {
-        return new ArrayList<>(users.values());
+        return new ArrayList<>(deepCopyMap().values());
+    }
+
+    private HashMap<Integer, User> deepCopyMap() {
+        HashMap<Integer, User> buffMap = new HashMap<>();
+        for (Integer integer : users.keySet()) {
+            buffMap.put(integer, users.get(integer));
+        }
+        return buffMap;
     }
 }
