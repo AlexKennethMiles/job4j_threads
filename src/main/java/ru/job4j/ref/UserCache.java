@@ -23,14 +23,8 @@ public class UserCache {
     }
 
     public List<User> findAll() {
-        return new ArrayList<>(deepCopyMap().values());
-    }
-
-    private HashMap<Integer, User> deepCopyMap() {
-        HashMap<Integer, User> buffMap = new HashMap<>();
-        for (Integer integer : users.keySet()) {
-            buffMap.put(integer, users.get(integer));
-        }
-        return buffMap;
+        return new ArrayList<>(users.values().stream()
+                .map(user -> User.of(user.getName()))
+                .toList());
     }
 }

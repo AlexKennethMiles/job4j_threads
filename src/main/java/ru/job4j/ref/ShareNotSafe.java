@@ -1,5 +1,7 @@
 package ru.job4j.ref;
 
+import java.util.List;
+
 public class ShareNotSafe {
     public static void main(String[] args) throws InterruptedException {
         UserCache cache = new UserCache();
@@ -8,6 +10,8 @@ public class ShareNotSafe {
         Thread first = new Thread(
                 () -> {
                     user.setName("rename");
+                    List<User> buf = cache.findAll();
+                    buf.get(0).setName("test");
                 }
         );
         first.start();
