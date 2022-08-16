@@ -10,7 +10,7 @@ public final class SaveSimpleFile implements SaveFile {
     }
 
     @Override
-    public void saveContent(String content) {
+    public synchronized void saveContent(String content) {
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
             for (int i = 0; i < content.length(); i += 1) {
                 bos.write(content.charAt(i));

@@ -10,27 +10,27 @@ public final class ParseFile implements ReadFile {
         this.file = file;
     }
 
-    public String getContent() {
+    public synchronized String getContent() {
         return content(data -> true);
     }
 
-    public String getContentWithoutUnicode() {
+    public synchronized String getContentWithoutUnicode() {
         return content(data -> data < 0x80);
     }
 
     @Override
-    public String content(Predicate<Integer> filter) {
-        String output = "";
+    public synchronized String content(Predicate<Integer> filter) {
+        StringBuilder output = new StringBuilder();
         try (BufferedInputStream bif = new BufferedInputStream(new FileInputStream(file))) {
             int data;
-            while ((data = bif.read()) > 0) {
+            while ((data = bif.read()) != -1) {
                 if (filter.test(data)) {
-                    output += (char) data;
+                    output.append((char) data);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return output;
+        return output.toString();
     }
 }
