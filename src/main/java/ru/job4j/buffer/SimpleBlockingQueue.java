@@ -20,19 +20,18 @@ public class SimpleBlockingQueue<T> {
         while (queue.size() == limit) {
             wait();
         }
+        queue.offer(value);
         if (queue.size() < limit) {
             notifyAll();
         }
-        queue.offer(value);
     }
 
     public synchronized T poll() throws InterruptedException {
         while (queue.isEmpty()) {
             wait();
         }
-        if (queue.size() == limit) {
-            notifyAll();
-        }
-        return queue.poll();
+        T rsl = queue.poll();
+        notifyAll();
+        return rsl;
     }
 }
