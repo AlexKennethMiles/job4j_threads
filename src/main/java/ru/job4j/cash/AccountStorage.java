@@ -7,43 +7,30 @@ public class AccountStorage {
     private final HashMap<Integer, Account> accounts = new HashMap<>();
 
     public synchronized boolean add(Account account) {
-        accounts.put(account.id(), new Account(account.id(), account.amount()));
-        return checkAccount(account);
+        return accounts.putIfAbsent(account.id(), new Account(account.id(), account.amount())) == null;
     }
 
     public synchronized boolean update(Account account) {
-        accounts.replace(account.id(), new Account(account.id(), account.amount()));
-        return checkAccount(account);
+        return accounts.replace(account.id(), new Account(account.id(), account.amount())) == null;
     }
 
     public synchronized boolean delete(int id) {
-        accounts.remove(id);
-        return accounts.containsKey(id);
+        return accounts.remove(id) == null;
     }
 
     public synchronized Optional<Account> getById(int id) {
-        Optional<Account> rsl = Optional.empty();
-        if (accounts.containsKey(id)) {
-            rsl = Optional.of(new Account(accounts.get(id).id(), accounts.get(id).amount()));
-        }
-        return rsl;
+        return Optional.ofNullable(accounts.get(id));
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
-        if (!accounts.containsKey(fromId)
-                || !accounts.containsKey(toId)) {
-            return false;
+        boolean rsl = false;
+        if (accounts.containsKey(fromId)
+                && accounts.containsKey(toId)
+                && accounts.get(fromId).amount() >= amount) {
+            update(new Account(fromId, accounts.get(fromId).amount() - amount));
+            update(new Account(toId, accounts.get(toId).amount() + amount));
+            rsl = true;
         }
-        if (accounts.get(fromId).amount() < amount) {
-            return false;
-        }
-        update(new Account(fromId, accounts.get(fromId).amount() - amount));
-        update(new Account(toId, accounts.get(toId).amount() + amount));
-        return true;
-
-    }
-
-    private boolean checkAccount(Account account) {
-        return accounts.get(account.id()).equals(new Account(account.id(), account.amount()));
+        return rsl;
     }
 }
