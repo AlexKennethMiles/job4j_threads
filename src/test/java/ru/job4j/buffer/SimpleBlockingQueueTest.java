@@ -1,4 +1,4 @@
-package ru.job4j;
+package ru.job4j.buffer;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,14 +17,22 @@ class SimpleBlockingQueueTest {
         Thread producer = new Thread(
                 () -> {
                     for (int i = 0; i < count; i++) {
-                        sbq.offer(i);
+                        try {
+                            sbq.offer(i);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
         Thread consumer = new Thread(
                 () -> {
                     for (int i = count; i > 0; i--) {
-                        rsl.add(sbq.poll());
+                        try {
+                            rsl.add(sbq.poll());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
@@ -46,7 +54,11 @@ class SimpleBlockingQueueTest {
         Thread consumer = new Thread(
                 () -> {
                     for (int i = count; i > 0; i--) {
-                        rsl.add(sbq.poll());
+                        try {
+                            rsl.add(sbq.poll());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
@@ -67,14 +79,22 @@ class SimpleBlockingQueueTest {
         Thread producer = new Thread(
                 () -> {
                     for (int i = 0; i < count; i++) {
-                        sbq.offer(i);
+                        try {
+                            sbq.offer(i);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
         Thread consumer = new Thread(
                 () -> {
                     for (int i = count; i > 0; i--) {
-                        rsl.add(sbq.poll());
+                        try {
+                            rsl.add(sbq.poll());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
