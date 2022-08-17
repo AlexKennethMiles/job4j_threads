@@ -26,9 +26,7 @@ public class AccountStorage {
         boolean rsl = false;
         Account fromAc = accounts.get(fromId);
         Account toAc = accounts.get(toId);
-        if (accounts.containsKey(fromId)
-                && accounts.containsKey(toId)
-                && fromAc != null
+        if (fromAc != null
                 && toAc != null) {
             if (fromAc.amount() >= amount) {
                 update(new Account(fromId, fromAc.amount() - amount));
