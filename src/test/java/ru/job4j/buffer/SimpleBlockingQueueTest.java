@@ -12,9 +12,11 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.*;
 
 class SimpleBlockingQueueTest {
+    private static final int LIMIT = 5;
+
     @Test
     public void whenProducerFillsTheQueue() throws InterruptedException {
-        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(5);
+        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(LIMIT);
         Queue<Integer> rsl = new LinkedList<>();
         int count = 10;
         Thread producer = new Thread(
@@ -48,7 +50,7 @@ class SimpleBlockingQueueTest {
 
     @Test
     public void whenConsumerTriesToTakeElButEmptyQueue() throws InterruptedException {
-        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(5);
+        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(LIMIT);
         Queue<Integer> rsl = new LinkedList<>();
         int count = 10;
         Thread producer = new Thread(
@@ -73,7 +75,7 @@ class SimpleBlockingQueueTest {
 
     @Test
     public void whenProducerFillsTheQueueButFullQueue() throws InterruptedException {
-        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(5);
+        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(LIMIT);
         Queue<Integer> rsl = new LinkedList<>();
         int count = 5;
         for (int i = 0; i < count; i++) {
@@ -111,10 +113,10 @@ class SimpleBlockingQueueTest {
     @Test
     public void whenFetchAllThenGetIt() throws InterruptedException {
         final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
-        final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(5);
+        final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(LIMIT);
         Thread producer = new Thread(
                 () -> {
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < LIMIT; i++) {
                         try {
                             queue.offer(i);
                         } catch (InterruptedException e) {
