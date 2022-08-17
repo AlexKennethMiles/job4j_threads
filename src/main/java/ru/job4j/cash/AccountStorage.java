@@ -7,11 +7,11 @@ public class AccountStorage {
     private final HashMap<Integer, Account> accounts = new HashMap<>();
 
     public synchronized boolean add(Account account) {
-        return accounts.putIfAbsent(account.id(), new Account(account.id(), account.amount())) == null;
+        return accounts.putIfAbsent(account.id(), account) == null;
     }
 
     public synchronized boolean update(Account account) {
-        return accounts.replace(account.id(), new Account(account.id(), account.amount())) == null;
+        return accounts.replace(account.id(), account) == null;
     }
 
     public synchronized boolean delete(int id) {
@@ -24,12 +24,17 @@ public class AccountStorage {
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
         boolean rsl = false;
+        Account fromAc = accounts.get(fromId);
+        Account toAc = accounts.get(toId);
         if (accounts.containsKey(fromId)
                 && accounts.containsKey(toId)
-                && accounts.get(fromId).amount() >= amount) {
-            update(new Account(fromId, accounts.get(fromId).amount() - amount));
-            update(new Account(toId, accounts.get(toId).amount() + amount));
-            rsl = true;
+                && fromAc != null
+                && toAc != null) {
+            if (fromAc.amount() >= amount) {
+                update(new Account(fromId, fromAc.amount() - amount));
+                update(new Account(toId, toAc.amount() + amount));
+                rsl = true;
+            }
         }
         return rsl;
     }
