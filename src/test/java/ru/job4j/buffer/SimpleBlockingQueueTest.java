@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 
