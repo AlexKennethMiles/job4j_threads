@@ -13,9 +13,7 @@ public class CountBarrier {
 
     public void count() {
         synchronized (this) {
-            while (count < total) {
-                count++;
-            }
+            count++;
             monitor.notifyAll();
         }
     }
@@ -32,6 +30,10 @@ public class CountBarrier {
         }
     }
 
+    public synchronized int getCount() {
+        return count;
+    }
+
     public synchronized int getTotal() {
         return total;
     }
@@ -41,7 +43,9 @@ public class CountBarrier {
         Thread first = new Thread(
                 () -> {
                     System.out.println(Thread.currentThread().getName() + " is started");
-                    countBarrier.count();
+                    while (countBarrier.getCount() < countBarrier.getTotal()) {
+                        countBarrier.count();
+                    }
                 },
                 "Master"
         );
