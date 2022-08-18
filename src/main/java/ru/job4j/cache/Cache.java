@@ -12,7 +12,7 @@ public class Cache {
 
     public boolean update(Base model) {
         return memory.computeIfPresent(model.getId(), (id, oldBase) -> {
-            if (model.getVersion() != memory.get(id).getVersion()) {
+            if (model.getVersion() != oldBase.getVersion()) {
                 throw new OptimisticException("Different version between two base item!");
             }
             return new Base(model.getId(), model.getVersion() + 1, model.getName());
