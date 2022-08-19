@@ -4,20 +4,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class EmailNotification {
-    private ExecutorService pool = Executors.newFixedThreadPool(
+    private final ExecutorService pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors()
     );
 
     public boolean emailTo(User user) {
-        pool.submit(new Runnable() {
-            @Override
-            public void run() {
-                String username = user.getUsername();
-                String email = user.getEmail();
-                String subject = "Notification " + username + " to email " + email + ".";
-                String body = "Add a new event to " + username;
-                send(subject, body, email);
-            }
+        pool.submit(() -> {
+            String username = user.getUsername();
+            String email = user.getEmail();
+            String subject = "Notification " + username + " to email " + email + ".";
+            String body = "Add a new event to " + username;
+            send(subject, body, email);
         });
         return false;
     }
