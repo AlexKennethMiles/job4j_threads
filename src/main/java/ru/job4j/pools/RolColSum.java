@@ -35,6 +35,9 @@ public class RolColSum {
     }
 
     public static Sums[] asyncSum(int[][] matrix) throws ExecutionException, InterruptedException {
+        if (matrix[0].length == 0) {
+            return new Sums[]{};
+        }
         Map<Integer, CompletableFuture<Sums>> map = new HashMap<>();
         int length = matrix.length;
         Sums[] sums = new Sums[length];
