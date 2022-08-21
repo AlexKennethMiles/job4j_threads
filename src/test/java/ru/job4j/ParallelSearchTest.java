@@ -3,8 +3,6 @@ package ru.job4j;
 import org.junit.jupiter.api.Test;
 import ru.job4j.email.User;
 
-import java.util.concurrent.ForkJoinPool;
-
 import static org.assertj.core.api.Assertions.*;
 
 class ParallelSearchTest {
@@ -23,8 +21,8 @@ class ParallelSearchTest {
         };
         User searchUser = new User("Michael", "michael@gmail.com");
         ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(8);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(8);
     }
 
     @Test
@@ -42,8 +40,8 @@ class ParallelSearchTest {
         };
         User searchUser = new User("Karen", "Karen@gmail.com");
         ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(-1);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(-1);
     }
 
     @Test
@@ -52,8 +50,8 @@ class ParallelSearchTest {
                 0, 1, 2, 3, 4, 5, 6, 7, 8
         };
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 8);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(8);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(8);
     }
 
     @Test
@@ -62,8 +60,8 @@ class ParallelSearchTest {
                 0, 1, 2, 3, 4, 5, 6, 7, 8
         };
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 10);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(-1);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(-1);
     }
 
     @Test
@@ -87,8 +85,8 @@ class ParallelSearchTest {
         };
         User searchUser = new User("Michael", "michael@gmail.com");
         ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(14);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(14);
     }
 
     @Test
@@ -98,8 +96,8 @@ class ParallelSearchTest {
             users[i] = i;
         }
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 0);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(0);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(0);
     }
 
     @Test
@@ -109,8 +107,8 @@ class ParallelSearchTest {
             users[i] = i;
         }
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 99);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(99);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(99);
     }
 
     @Test
@@ -120,8 +118,8 @@ class ParallelSearchTest {
             users[i] = i;
         }
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 0);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(0);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(0);
     }
 
     @Test
@@ -131,8 +129,8 @@ class ParallelSearchTest {
             users[i] = i;
         }
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 5_721);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(5_721);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(5_721);
     }
 
     @Test
@@ -142,7 +140,7 @@ class ParallelSearchTest {
             users[i] = i;
         }
         ParallelSearch<Integer> search = new ParallelSearch<>(users, 1_936);
-        ForkJoinPool pool = new ForkJoinPool();
-        assertThat(pool.invoke(search)).isEqualTo(1_936);
+        int rsl = search.search();
+        assertThat(rsl).isEqualTo(1_936);
     }
 }

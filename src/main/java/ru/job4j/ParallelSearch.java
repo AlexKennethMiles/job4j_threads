@@ -1,20 +1,31 @@
 package ru.job4j;
 
-import java.util.Arrays;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 public class ParallelSearch<T> extends RecursiveTask<Integer> {
     private final T[] array;
     private final T value;
+    private final int from;
+    private final int to;
 
     public ParallelSearch(T[] array, T value) {
         this.array = array;
         this.value = value;
+        this.from = 0;
+        this.to = array.length - 1;
+    }
+
+    public ParallelSearch(T[] array, T value, int from, int to) {
+        this.array = array;
+        this.value = value;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     protected Integer compute() {
-        if (array.length < 10) {
+        if (from - to < 10) {
             for (int i = 0; i < array.length; i++) {
                 if (array[i].equals(value)) {
                     return i;
@@ -22,13 +33,18 @@ public class ParallelSearch<T> extends RecursiveTask<Integer> {
             }
             return -1;
         }
-        int mid = array.length / 2;
-        ParallelSearch<T> leftSide = new ParallelSearch<>(Arrays.copyOfRange(array, 0, mid), value);
-        ParallelSearch<T> rightSide = new ParallelSearch<>(Arrays.copyOfRange(array, mid, array.length), value);
+        int mid = (from + to) / 2;
+        ParallelSearch<T> leftSide = new ParallelSearch<>(array, value, from, mid);
+        ParallelSearch<T> rightSide = new ParallelSearch<>(array, value, mid, to);
         leftSide.fork();
         rightSide.fork();
         Integer left = leftSide.join();
         Integer right = rightSide.join();
         return right == -1 ? left : (right + mid);
+    }
+
+    public int search() {
+        ForkJoinPool pool = new ForkJoinPool();
+        return pool.invoke(new ParallelSearch<>(array, value, 0, array.length - 1));
     }
 }
