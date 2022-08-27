@@ -9,13 +9,6 @@ public class ParallelSearch<T> extends RecursiveTask<Integer> {
     private final int from;
     private final int to;
 
-    public ParallelSearch(T[] array, T value) {
-        this.array = array;
-        this.value = value;
-        this.from = 0;
-        this.to = array.length - 1;
-    }
-
     public ParallelSearch(T[] array, T value, int from, int to) {
         this.array = array;
         this.value = value;
@@ -35,15 +28,15 @@ public class ParallelSearch<T> extends RecursiveTask<Integer> {
         }
         int mid = (from + to) / 2;
         ParallelSearch<T> leftSide = new ParallelSearch<>(array, value, from, mid);
-        ParallelSearch<T> rightSide = new ParallelSearch<>(array, value, mid, to);
+        ParallelSearch<T> rightSide = new ParallelSearch<>(array, value, mid + 1, to);
         leftSide.fork();
         rightSide.fork();
         Integer left = leftSide.join();
         Integer right = rightSide.join();
-        return right == -1 ? left : (right + mid);
+        return right == -1 ? left : right;
     }
 
-    public int search() {
+    public static <T> int search(T[] array, T value) {
         ForkJoinPool pool = new ForkJoinPool();
         return pool.invoke(new ParallelSearch<>(array, value, 0, array.length - 1));
     }

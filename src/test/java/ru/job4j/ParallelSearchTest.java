@@ -20,8 +20,7 @@ class ParallelSearchTest {
                 new User("Michael", "michael@gmail.com")
         };
         User searchUser = new User("Michael", "michael@gmail.com");
-        ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, searchUser);
         assertThat(rsl).isEqualTo(8);
     }
 
@@ -39,8 +38,7 @@ class ParallelSearchTest {
                 new User("Michael", "michael@gmail.com")
         };
         User searchUser = new User("Karen", "Karen@gmail.com");
-        ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, searchUser);
         assertThat(rsl).isEqualTo(-1);
     }
 
@@ -49,8 +47,7 @@ class ParallelSearchTest {
         Integer[] users = new Integer[]{
                 0, 1, 2, 3, 4, 5, 6, 7, 8
         };
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 8);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 8);
         assertThat(rsl).isEqualTo(8);
     }
 
@@ -59,8 +56,7 @@ class ParallelSearchTest {
         Integer[] users = new Integer[]{
                 0, 1, 2, 3, 4, 5, 6, 7, 8
         };
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 10);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 10);
         assertThat(rsl).isEqualTo(-1);
     }
 
@@ -84,8 +80,7 @@ class ParallelSearchTest {
                 new User("Michael", "michael@gmail.com")
         };
         User searchUser = new User("Michael", "michael@gmail.com");
-        ParallelSearch<User> search = new ParallelSearch<>(users, searchUser);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, searchUser);
         assertThat(rsl).isEqualTo(14);
     }
 
@@ -95,8 +90,7 @@ class ParallelSearchTest {
         for (int i = 0; i < 15; i++) {
             users[i] = i;
         }
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 0);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 0);
         assertThat(rsl).isEqualTo(0);
     }
 
@@ -106,8 +100,7 @@ class ParallelSearchTest {
         for (int i = 0; i < 100; i++) {
             users[i] = i;
         }
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 99);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 99);
         assertThat(rsl).isEqualTo(99);
     }
 
@@ -117,8 +110,7 @@ class ParallelSearchTest {
         for (int i = 0; i < 1000; i++) {
             users[i] = i;
         }
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 0);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 0);
         assertThat(rsl).isEqualTo(0);
     }
 
@@ -128,8 +120,7 @@ class ParallelSearchTest {
         for (int i = 0; i < 10_000; i++) {
             users[i] = i;
         }
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 5_721);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 5_721);
         assertThat(rsl).isEqualTo(5_721);
     }
 
@@ -139,8 +130,7 @@ class ParallelSearchTest {
         for (int i = 0; i < 9_604; i++) {
             users[i] = i;
         }
-        ParallelSearch<Integer> search = new ParallelSearch<>(users, 1_936);
-        int rsl = search.search();
+        int rsl = ParallelSearch.search(users, 1_936);
         assertThat(rsl).isEqualTo(1_936);
     }
 }
