@@ -1,44 +1,44 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.util.function.Predicate;
 
-public class ParseFile {
-    private File file;
+/**
+ * Исправлены ошибки:
+ * 1) Потокобезопасность - класс стал Immutable, методы synchronized;
+ * 2) IO ошибки - добавлены try-with-resources;
+ * 3) Нарушение Single Responsibility Principle - класс разделён на два, читающий и записывающий;
+ * 4) Повторение кода в методе getContent - применение шаблона Strategy;
+ * [5] Конкатенация String через += - замена на {@link StringBuilder#append(char)}.
+ */
+public final class ParseFile {
+    private final File file;
 
-    public synchronized void setFile(File f) {
-        file = f;
+    public ParseFile(File file) {
+        this.file = file;
     }
 
-    public synchronized File getFile() {
-        return file;
-    }
-
-    public String getContent() throws IOException {
-        InputStream i = new FileInputStream(file);
-        String output = "";
-        int data;
-        while ((data = i.read()) > 0) {
-            output += (char) data;
-        }
-        return output;
-    }
-
-    public String getContentWithoutUnicode() throws IOException {
-        InputStream i = new FileInputStream(file);
-        String output = "";
-        int data;
-        while ((data = i.read()) > 0) {
-            if (data < 0x80) {
-                output += (char) data;
+    public synchronized String content(Predicate<Character> filter) {
+        StringBuilder output = new StringBuilder();
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+            int data;
+            while ((data = in.read()) != -1) {
+                if (filter.test((char) data)) {
+                    output.append((char) data);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return output;
+        return output.toString();
     }
 
-    public void saveContent(String content) throws IOException {
-        OutputStream o = new FileOutputStream(file);
-        for (int i = 0; i < content.length(); i += 1) {
-            o.write(content.charAt(i));
-        }
+    public synchronized String getContent() {
+        return content(data -> true);
     }
+
+    public synchronized String getContentWithUnicode() {
+        return content(data -> data < 0x80);
+    }
+
 }
