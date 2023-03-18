@@ -15,7 +15,11 @@ class SimpleBlockingQueueTest {
     public void whenOneOfferedOnePolled() throws InterruptedException {
         AtomicInteger polled = new AtomicInteger();
         Thread consumer = new Thread(() -> {
-            polled.set(queue.poll());
+            try {
+                polled.set(queue.poll());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }, "Consumer");
         Thread producer = new Thread(() -> {
             queue.offer(1);
@@ -33,7 +37,12 @@ class SimpleBlockingQueueTest {
         List<Integer> list = new ArrayList<>();
         Thread consumer = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
-                Integer value = queue.poll();
+                Integer value = -1;
+                try {
+                    value = queue.poll();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 list.add(value);
                 polled.set(value);
             }
@@ -55,7 +64,11 @@ class SimpleBlockingQueueTest {
     public void whenFiveOfferedOnePolled() throws InterruptedException {
         AtomicInteger polled = new AtomicInteger(-1);
         Thread consumer = new Thread(() -> {
-            polled.set(queue.poll());
+            try {
+                polled.set(queue.poll());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }, "Consumer");
         Thread producer = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
@@ -87,7 +100,12 @@ class SimpleBlockingQueueTest {
         }, "Producer");
         Thread consumer = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
-                Integer value = queue.poll();
+                Integer value = -1;
+                try {
+                    value = queue.poll();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 list.add(value);
                 polled.set(value);
             }
