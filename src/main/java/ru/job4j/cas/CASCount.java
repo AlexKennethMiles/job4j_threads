@@ -2,6 +2,7 @@ package ru.job4j.cas;
 
 import net.jcip.annotations.ThreadSafe;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -14,13 +15,13 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @ThreadSafe
 public class CASCount {
-    private final AtomicReference<Integer> count = new AtomicReference<>(0);
+    private final AtomicInteger count = new AtomicInteger(0);
 
     public void increment() {
-        Integer ref;
+        int current;
         do {
-            ref = count.get();
-        } while (!count.compareAndSet(ref, count.get() + 1));
+            current = count.get();
+        } while (!count.compareAndSet(current, current + 1));
     }
 
     public int get() {
