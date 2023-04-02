@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 
 class SimpleBlockingQueueTest {
-    private final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(5);
+    private final int capacity = 5;
+    private final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(capacity);
 
     @Test
     public void whenOneOfferedOnePolled() throws InterruptedException {
@@ -36,7 +38,7 @@ class SimpleBlockingQueueTest {
         AtomicInteger polled = new AtomicInteger();
         List<Integer> list = new ArrayList<>();
         Thread consumer = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < capacity; i++) {
                 Integer value = -1;
                 try {
                     value = queue.poll();
@@ -48,7 +50,7 @@ class SimpleBlockingQueueTest {
             }
         }, "Consumer");
         Thread producer = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < capacity; i++) {
                 queue.offer(i);
             }
         }, "Producer");
@@ -71,7 +73,7 @@ class SimpleBlockingQueueTest {
             }
         }, "Consumer");
         Thread producer = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < capacity; i++) {
                 queue.offer(i);
             }
         }, "Producer");
@@ -87,7 +89,7 @@ class SimpleBlockingQueueTest {
         AtomicInteger polled = new AtomicInteger(-1);
         List<Integer> list = new ArrayList<>();
         Thread initial = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < capacity; i++) {
                 queue.offer(i);
             }
         }, "Producer");
@@ -115,5 +117,30 @@ class SimpleBlockingQueueTest {
         producer.join();
         consumer.join();
         assertThat(list).isEqualTo(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+    }
+
+    @Test
+    public void whenFetchAllThenGetIt() throws InterruptedException {
+        List<Integer> rsl = new ArrayList<>();
+        Thread producer = new Thread(() -> {
+            IntStream.range(0, 4).forEach(
+                    queue::offer
+            );
+        }, "Producer");
+        producer.start();
+        Thread consumer = new Thread(() -> {
+            while (!queue.isEmpty() || !Thread.currentThread().isInterrupted()) {
+                try {
+                    rsl.add(queue.poll());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }, "Consumer");
+        consumer.start();
+        producer.join();
+        consumer.interrupt();
+        consumer.join();
+        assertThat(rsl).isEqualTo(List.of(0, 1, 2, 3));
     }
 }
