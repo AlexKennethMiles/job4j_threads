@@ -1,4 +1,4 @@
-package ru.job4j.pool;
+package ru.job4j.pools;
 
 import ru.job4j.cas.CASCount;
 import ru.job4j.queue.SimpleBlockingQueue;
