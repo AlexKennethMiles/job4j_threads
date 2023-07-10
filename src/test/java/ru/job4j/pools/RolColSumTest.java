@@ -64,7 +64,6 @@ class RolColSumTest {
         assertThat(rsl).isEqualTo(exp);
     }
 
-
     @Test
     public void whenEmptyMatrix() {
         int[][] matrix = {{}};

@@ -14,14 +14,12 @@ class CASCountTest {
     @Test
     public void whenIncrementTenTimes() throws InterruptedException {
         CASCount count = new CASCount();
-        Thread first = new Thread(() ->
-        {
+        Thread first = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
                 count.increment();
             }
         });
-        Thread second = new Thread(() ->
-        {
+        Thread second = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
                 count.increment();
             }
@@ -36,20 +34,17 @@ class CASCountTest {
     @Test
     public void whenThreeThreadsIncrementToThirty() throws InterruptedException {
         CASCount count = new CASCount();
-        Thread first = new Thread(() ->
-        {
+        Thread first = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
                 count.increment();
             }
         });
-        Thread second = new Thread(() ->
-        {
+        Thread second = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
                 count.increment();
             }
         });
-        Thread third = new Thread(() ->
-        {
+        Thread third = new Thread(() -> {
             for (int i = 0; i < 10; i++) {
                 count.increment();
             }
