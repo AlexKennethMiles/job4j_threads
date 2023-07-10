@@ -17,7 +17,6 @@ public class MergeSort {
         );
     }
 
-    // Метод объединения двух отсортированных массивов
     public static int[] merge(int[] left, int[] right) {
         int li = 0;
         int ri = 0;
